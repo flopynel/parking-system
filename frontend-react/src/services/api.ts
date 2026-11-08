@@ -93,7 +93,9 @@ export function adaptParkingStatus(data: BackendParkingStatus, config: ApiConfig
     lastEvent: capture ? {
       kind: kinds[capture.eventType], plate: capture.plate,
       at: Date.parse(capture.timestamp), confidence: capture.confidence,
-      photo: backendImageUrl(config.baseUrl, capture.imageUrl, true),
+      // The backend already versions the image per capture (?t=<capture time>); only force a
+      // cache-buster when it doesn't, otherwise the photo would be re-downloaded on every poll.
+      photo: backendImageUrl(config.baseUrl, capture.imageUrl, !/[?&]t=/.test(capture.imageUrl)),
     } : null,
   };
 }

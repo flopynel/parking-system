@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -14,20 +13,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { useParking } from "@/hooks/use-parking";
 import { formatDuration, type ApiConfig, type Session } from "@/services/api";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Smart Parking & LPR Control Center" },
-      { name: "description", content: "Dashboard IoT pentru parcare inteligentă cu ESP32-CAM, recunoaștere numere și barieră automată." },
-      { property: "og:title", content: "Smart Parking & LPR Control Center" },
-      { property: "og:description", content: "Monitorizare live a locurilor, intrărilor și ieșirilor cu ESP32-CAM." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Dashboard,
-});
 
 const fmt = (t: number) =>
   new Date(t).toLocaleString("ro-RO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" });
@@ -67,7 +52,7 @@ function Panel({ title, icon: Icon, children, action, className }: { title: stri
   );
 }
 
-function Dashboard() {
+export default function Dashboard() {
   const p = useParking();
   const { state, now } = p;
   if (!p.mounted) return <div className="min-h-screen bg-background" />;

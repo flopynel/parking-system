@@ -81,20 +81,25 @@ export function useParking() {
     return () => clearInterval(t);
   }, []);
 
-  // Poll real backend every 3s when not in demo mode
+  // Poll real backend every 1s when not in demo mode (skips a tick if the previous request is still running)
   useEffect(() => {
     if (!mounted || demo) { setOnline(false); return; }
     let alive = true;
+    let inFlight = false;
     const poll = async () => {
+      if (inFlight) return;
+      inFlight = true;
       try {
         const data = await api.getStatus(config);
         if (alive) { setLiveState(adaptParkingStatus(data, config)); setOnline(data.esp32Online); }
       } catch {
         if (alive) setOnline(false);
+      } finally {
+        inFlight = false;
       }
     };
     poll();
-    const t = setInterval(poll, 3000);
+    const t = setInterval(poll, 1000);
     return () => { alive = false; clearInterval(t); };
   }, [mounted, demo, config]);
 
